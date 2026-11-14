@@ -189,7 +189,7 @@ footer img{height:36px;opacity:.9;margin-bottom:6px}
 <script>
 /* ================= RÉGLAGE ================= */
 // Colle ici l'adresse de ton script Google (se termine par /exec)
-const API_URL = '';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxYOAfGya7d2upJ9I5XZ7sT3wCKsso3jJgi4HaxOgH-eAq0yHyVgV42ziWZhVGoOu3A/exec';
 /* =========================================== */
 
 const DEMO = {"client":{"prenom":"Marie","programme":"Dos & posture – Séance A","message":"On garde un rythme lent et contrôlé. Si une douleur apparaît, réduis l'amplitude et note-le en bas de page.","duree":"30 min","materiel":"Tapis + élastique","frequence":"3× / semaine"},"blocs":[{"titre":"Échauffement","type":"simple","tours":null,"reposTour":null,"items":[{"nom":"Le chat","zone":"Étirements & mobilité","materiel":"Poids du corps","video":"l4Ka63iomGY","series":2,"reps":"10","sec":null,"repos":30,"consigne":"Inspire en creusant, expire en arrondissant."}]},{"titre":"Circuit renfo","type":"circuit","tours":3,"reposTour":90,"items":[{"nom":"Fessiers extension de hanche","zone":"Fessiers & hanches","materiel":"Poids du corps","video":"MnMZ9Qy8bt8","series":null,"reps":"12","sec":null,"repos":15,"consigne":""},{"nom":"Rowing élastique","zone":"Haut du corps","materiel":"Élastique","video":"nG_01Alv3R0","series":null,"reps":"12","sec":null,"repos":15,"consigne":"Omoplates vers l'arrière et vers le bas."},{"nom":"Squat poids du corps","zone":"Jambes","materiel":"Poids du corps","video":"STFlWF1aetU","series":null,"reps":"10","sec":null,"repos":15,"consigne":""},{"nom":"Gainage","zone":"Gainage & abdos","materiel":"Poids du corps","video":"tO1iONbL5BY","series":null,"reps":"25 s","sec":25,"repos":15,"consigne":"Nombril rentré, respire normalement."}],"repos":15},{"titre":"Circuit chrono","type":"chrono","tours":2,"reposTour":60,"items":[{"nom":"Montée de genoux debout (élastique)","zone":"Jambes","materiel":"Élastique","video":"yju8vrzt8Fk","series":null,"reps":"30 s","sec":30,"repos":15,"consigne":""},{"nom":"Fentes dynamique vers l'arrière","zone":"Jambes","materiel":"Poids du corps","video":"i3foTdEqMd4","series":null,"reps":"30 s","sec":30,"repos":15,"consigne":""},{"nom":"Marche de l'ours","zone":"Gainage & abdos","materiel":"Poids du corps","video":"IDdgV29IzAE","series":null,"reps":"30 s","sec":30,"repos":15,"consigne":""}],"repos":15,"travail":30},{"titre":"Retour au calme","type":"simple","tours":null,"reposTour":null,"items":[{"nom":"Position de l'enfant","zone":"Étirements & mobilité","materiel":"Poids du corps","video":"IKjekwP-gxE","series":1,"reps":"40 s","sec":40,"repos":0,"consigne":"Relâche les épaules, respire lentement."}]}]};
@@ -209,7 +209,7 @@ async function load(){
   try{
     if (IS_DEMO) { P = DEMO; }
     else {
-      const r = await fetch(API_URL + '?c=' + encodeURIComponent(CODE));
+      const r = await fetch(API_URL + '?code=' + encodeURIComponent(CODE));
       P = await r.json();
     }
     if (P.erreur) return showError(P.erreur);
