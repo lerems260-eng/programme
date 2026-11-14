@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#99BFA9">
+<meta name="robots" content="noindex, nofollow">
+<title>Mon programme – Rémy Reynaud</title>
+<link rel="icon" href="icon-64.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Signika+Negative:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --vert:#99BFA9; --vert2:#739683; --vert-l:#E6EFE9; --gris:#E5E7E4; --gris2:#AFB0AD;
+  --noir:#1B1B1F; --rose:#C19292; --rose-l:#F4E8E8; --beige:#EAD8C6; --beige-l:#F7EFE7;
+  --bg:#F4F5F3; --card:#FFFFFF; --muted:#6E716C; --r:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Montserrat',system-ui,sans-serif;background:var(--bg);color:var(--noir);line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.sig{font-family:'Signika Negative',system-ui,sans-serif;font-weight:600;letter-spacing:-.005em}
+button,.btn{font:inherit;cursor:pointer;border:none;background:none;color:inherit;text-decoration:none}
+.wrap{max-width:540px;margin:0 auto;padding:18px 16px 60px}
+header.top{display:flex;justify-content:center;padding:6px 0 14px}
+header.top img{height:58px;width:auto}
+.hello{font-size:31px;line-height:1.15;margin:10px 0 4px}
+.sub{color:var(--muted);font-size:15px}
+.sub b{color:var(--noir);font-weight:600}
+.note{margin-top:16px;background:var(--vert-l);border-radius:var(--r);padding:14px 16px;font-size:14.5px;display:flex;gap:12px;align-items:flex-start}
+.note img{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:#fff}
+.note b{color:var(--vert2);display:block;font-family:'Signika Negative',sans-serif;font-size:15px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chip{background:var(--card);border:1px solid var(--gris);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:500}
+.playall{margin-top:16px;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--noir);color:#fff;border-radius:14px;padding:15px;font-weight:600;font-size:15px}
+.progress{margin:24px 0 6px;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted);font-weight:500}
+.bar{flex:1;height:8px;background:var(--gris);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--vert2);border-radius:99px;transition:width .4s}
+.reset{font-size:12px;color:var(--muted);text-decoration:underline}
+
+.block-title{display:flex;align-items:center;gap:10px;margin:26px 0 12px}
+.block-title .bn{font-family:'Signika Negative',sans-serif;font-size:14px;color:#fff;background:var(--vert2);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+.block-title h2{font-size:22px}
+.block-title .k{font-size:12.5px;color:var(--muted)}
+
+.ex{background:var(--card);border:1px solid var(--gris);border-radius:var(--r);overflow:hidden;margin-bottom:14px;transition:border-color .3s}
+.ex.done{border-color:var(--vert2)}
+.thumb{position:relative;aspect-ratio:16/9;display:grid;place-items:center;cursor:pointer;background:linear-gradient(135deg,var(--vert),var(--vert2));overflow:hidden}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,.35))}
+.play{position:relative;z-index:1;width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.95);display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.2);transition:transform .2s}
+.thumb:hover .play{transform:scale(1.07)}
+.tag{position:absolute;z-index:1;top:12px;left:12px;background:rgba(27,27,31,.55);color:#fff;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600}
+.exbody{padding:16px}
+.exbody h3{font-size:20px;line-height:1.2}
+.target{font-size:12.5px;color:var(--muted);margin-top:2px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.stat{background:var(--bg);border-radius:12px;padding:10px 6px;text-align:center}
+.stat b{display:block;font-size:19px;font-family:'Signika Negative',sans-serif}
+.stat span{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.tip{font-size:14px;background:var(--beige-l);border-radius:12px;padding:10px 12px;margin-bottom:14px}
+.tip b{color:#8a6a4c}
+.sets{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sets-label{font-size:12.5px;color:var(--muted);font-weight:600;width:100%;margin-bottom:2px}
+.set{min-width:46px;height:46px;padding:0 12px;border-radius:12px;border:2px solid var(--gris);font-weight:700;color:var(--muted);transition:all .2s}
+.set.on{background:var(--vert2);border-color:var(--vert2);color:#fff}
+.rest-btn{margin-left:auto;display:flex;align-items:center;gap:6px;background:var(--beige);color:#5e4632;border-radius:12px;padding:12px 14px;font-weight:600;font-size:14px}
+
+.circuit{background:var(--card);border:1px solid var(--gris);border-left:5px solid var(--rose);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.circuit.chrono{border-left-color:var(--vert2)}
+.circuit.done{border-color:var(--vert2)}
+.ctag{display:inline-block;background:var(--rose-l);color:#8a5d5d;font-weight:700;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px}
+.chrono .ctag{background:var(--vert-l);color:var(--vert2)}
+.cinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 6px}
+.crow{display:flex;gap:12px;align-items:center;padding:10px 0;cursor:pointer}
+.crow+.crow,.trans+.crow{border-top:1px dashed var(--gris)}
+.mini{width:84px;aspect-ratio:16/10;border-radius:10px;display:grid;place-items:center;flex-shrink:0;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--vert),var(--vert2))}
+.mini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mini .play{width:26px;height:26px;box-shadow:none}
+.mini .o{position:absolute;z-index:1;top:4px;left:6px;color:#fff;font-size:11px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.ci{flex:1;min-width:0}
+.ci b{display:block;font-size:15px;font-weight:600}
+.ci small{display:block;color:var(--muted);font-size:12.5px;line-height:1.35}
+.rp{font-family:'Signika Negative',sans-serif;font-size:17px;font-weight:600;white-space:nowrap}
+.trans{font-size:12px;color:var(--muted);text-align:center;padding:2px 0 6px}
+.guided{width:100%;margin-top:14px;background:var(--noir);color:#fff;border-radius:14px;padding:14px;font-weight:700;font-size:15px}
+.chrono .guided{background:var(--vert2)}
+
+.feedback{background:var(--card);border:1px solid var(--gris);border-radius:var(--r);padding:20px 16px;margin-top:26px}
+.feedback h2{font-size:23px;margin-bottom:2px}
+.feedback p.s{color:var(--muted);font-size:14px;margin-bottom:6px}
+.flabel{font-size:14px;font-weight:600;margin:16px 0 8px}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.scale button{border:2px solid var(--gris);border-radius:12px;padding:10px 2px;font-size:11.5px;color:var(--muted);font-weight:500;line-height:1.2}
+.scale button b{display:block;font-size:21px}
+.scale button.on{border-color:var(--vert2);background:var(--vert-l);color:var(--noir)}
+.yn{display:flex;gap:8px}
+.yn button{flex:1;border:2px solid var(--gris);border-radius:12px;padding:11px;font-weight:600;color:var(--muted)}
+.yn button.on[data-v=Non]{border-color:var(--vert2);background:var(--vert-l);color:var(--noir)}
+.yn button.on[data-v=Oui]{border-color:var(--rose);background:var(--rose-l);color:#7a4a4a}
+textarea{width:100%;min-height:100px;border:2px solid var(--gris);border-radius:12px;padding:12px;font:inherit;font-size:15px;background:var(--bg);resize:vertical}
+textarea:focus{outline:none;border-color:var(--vert2)}
+.send{margin-top:16px;width:100%;background:var(--vert2);color:#fff;border-radius:14px;padding:15px;font-weight:700;font-size:16px}
+.send:disabled{opacity:.6}
+.msg{display:none;margin-top:14px;border-radius:12px;padding:12px 14px;font-size:14px}
+.msg.ok{display:block;background:var(--vert-l)}
+.msg.err{display:block;background:var(--rose-l)}
+.rgpd{font-size:11.5px;color:var(--muted);margin-top:14px;line-height:1.45}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:30px}
+footer img{height:36px;opacity:.9;margin-bottom:6px}
+
+.state{text-align:center;padding:60px 20px;color:var(--muted)}
+.state h2{color:var(--noir);margin-bottom:8px}
+.spin{width:36px;height:36px;border:4px solid var(--gris);border-top-color:var(--vert2);border-radius:50%;margin:0 auto 14px;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Minuteur de repos */
+.overlay{position:fixed;inset:0;background:rgba(27,27,31,.9);z-index:50;display:none;place-items:center;color:#fff;text-align:center;padding:20px}
+.overlay.on{display:grid}
+.ring{position:relative;width:220px;height:220px;margin:0 auto 20px}
+.ring svg{transform:rotate(-90deg)}
+.ring .t{position:absolute;inset:0;display:grid;place-items:center;font-family:'Signika Negative',sans-serif;font-size:60px;font-weight:600}
+.overlay p{opacity:.8;margin-bottom:18px}
+.row{display:flex;gap:10px;justify-content:center}
+.row button{background:rgba(255,255,255,.14);border-radius:12px;padding:12px 18px;font-weight:600}
+.row button.main{background:#fff;color:var(--noir)}
+
+/* Vidéo */
+.vmodal{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:70;display:none;flex-direction:column;justify-content:center;padding:16px}
+.vmodal.on{display:flex}
+.vbox{max-width:720px;width:100%;margin:0 auto}
+.vbox .frame{aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden}
+.vbox iframe{width:100%;height:100%;border:0}
+.vbox .in{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#fff;padding:12px 2px}
+.vbox .in b{font-family:'Signika Negative',sans-serif;font-size:18px}
+.vbox .in button{background:#fff;color:var(--noir);border-radius:12px;padding:10px 16px;font-weight:700}
+
+/* Mode guidé */
+.guide{position:fixed;inset:0;z-index:60;background:var(--noir);color:#fff;display:none;flex-direction:column;transition:background .5s}
+.guide.on{display:flex}
+.gtop{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;font-size:14px;font-weight:600}
+.gtop .x{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.14);font-size:18px}
+.gdots{display:flex;gap:5px;padding:0 18px}
+.gdots i{flex:1;height:5px;border-radius:9px;background:rgba(255,255,255,.18)}
+.gdots i.d{background:var(--vert)}.gdots i.c{background:#fff}
+.gmain{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:14px 22px;max-width:540px;margin:0 auto;width:100%;overflow:auto}
+.gphase{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;opacity:.8;margin-bottom:12px}
+.gvid{width:100%;max-width:340px;aspect-ratio:16/9;border-radius:16px;display:grid;place-items:center;margin-bottom:16px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--vert),var(--vert2));cursor:pointer}
+.gvid img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.gname{font-size:30px;line-height:1.1}
+.greps{font-family:'Signika Negative',sans-serif;font-size:46px;font-weight:600;margin:6px 0}
+.gtip{opacity:.85;font-size:15px;max-width:380px}
+.gring{position:relative;width:190px;height:190px;margin:4px auto 14px}
+.gring svg{transform:rotate(-90deg)}
+.gring .t{position:absolute;inset:0;display:grid;place-items:center;font-family:'Signika Negative',sans-serif;font-size:56px;font-weight:600}
+.gnext{font-size:15px;opacity:.85;margin-top:4px}
+.gbot{padding:16px 18px 22px;display:flex;gap:10px;max-width:540px;margin:0 auto;width:100%}
+.gbot button{flex:1;white-space:nowrap;border-radius:14px;padding:16px 8px;font-weight:700;font-size:15px;background:rgba(255,255,255,.14)}
+.gbot button.main{background:#fff;color:var(--noir)}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app">
+  <header class="top"><img src="logo.png" alt="Rémy Reynaud – Coach & Éducateur fitness à domicile"></header>
+  <div class="state" id="state"><div class="spin"></div>Chargement de ton programme…</div>
+</div>
+
+<div class="overlay" id="timer">
+  <div>
+    <div class="ring">
+      <svg width="220" height="220"><circle cx="110" cy="110" r="98" stroke="rgba(255,255,255,.15)" stroke-width="12" fill="none"/><circle id="arc" cx="110" cy="110" r="98" stroke="#99BFA9" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="615.75" stroke-dashoffset="0"/></svg>
+      <div class="t" id="tnum">60</div>
+    </div>
+    <p>Repos · respire calmement</p>
+    <div class="row"><button id="tplus">+15 s</button><button class="main" id="tstop">Passer</button></div>
+  </div>
+</div>
+
+<div class="vmodal" id="vmodal"><div class="vbox"><div class="frame" id="vframe"></div><div class="in"><b id="vtitle"></b><button id="vclose">Fermer</button></div></div></div>
+
+<div class="guide" id="guide">
+  <div class="gtop"><span id="gpos"></span><button class="x" id="gx" aria-label="Quitter">✕</button></div>
+  <div class="gdots" id="gdots"></div>
+  <div class="gmain" id="gmain"></div>
+  <div class="gbot" id="gbot"></div>
+</div>
+
+<script>
+/* ================= RÉGLAGE ================= */
+// Colle ici l'adresse de ton script Google (se termine par /exec)
+const API_URL = '';
+/* =========================================== */
+
+const DEMO = {"client":{"prenom":"Marie","programme":"Dos & posture – Séance A","message":"On garde un rythme lent et contrôlé. Si une douleur apparaît, réduis l'amplitude et note-le en bas de page.","duree":"30 min","materiel":"Tapis + élastique","frequence":"3× / semaine"},"blocs":[{"titre":"Échauffement","type":"simple","tours":null,"reposTour":null,"items":[{"nom":"Le chat","zone":"Étirements & mobilité","materiel":"Poids du corps","video":"l4Ka63iomGY","series":2,"reps":"10","sec":null,"repos":30,"consigne":"Inspire en creusant, expire en arrondissant."}]},{"titre":"Circuit renfo","type":"circuit","tours":3,"reposTour":90,"items":[{"nom":"Fessiers extension de hanche","zone":"Fessiers & hanches","materiel":"Poids du corps","video":"MnMZ9Qy8bt8","series":null,"reps":"12","sec":null,"repos":15,"consigne":""},{"nom":"Rowing élastique","zone":"Haut du corps","materiel":"Élastique","video":"nG_01Alv3R0","series":null,"reps":"12","sec":null,"repos":15,"consigne":"Omoplates vers l'arrière et vers le bas."},{"nom":"Squat poids du corps","zone":"Jambes","materiel":"Poids du corps","video":"STFlWF1aetU","series":null,"reps":"10","sec":null,"repos":15,"consigne":""},{"nom":"Gainage","zone":"Gainage & abdos","materiel":"Poids du corps","video":"tO1iONbL5BY","series":null,"reps":"25 s","sec":25,"repos":15,"consigne":"Nombril rentré, respire normalement."}],"repos":15},{"titre":"Circuit chrono","type":"chrono","tours":2,"reposTour":60,"items":[{"nom":"Montée de genoux debout (élastique)","zone":"Jambes","materiel":"Élastique","video":"yju8vrzt8Fk","series":null,"reps":"30 s","sec":30,"repos":15,"consigne":""},{"nom":"Fentes dynamique vers l'arrière","zone":"Jambes","materiel":"Poids du corps","video":"i3foTdEqMd4","series":null,"reps":"30 s","sec":30,"repos":15,"consigne":""},{"nom":"Marche de l'ours","zone":"Gainage & abdos","materiel":"Poids du corps","video":"IDdgV29IzAE","series":null,"reps":"30 s","sec":30,"repos":15,"consigne":""}],"repos":15,"travail":30},{"titre":"Retour au calme","type":"simple","tours":null,"reposTour":null,"items":[{"nom":"Position de l'enfant","zone":"Étirements & mobilité","materiel":"Poids du corps","video":"IKjekwP-gxE","series":1,"reps":"40 s","sec":40,"repos":0,"consigne":"Relâche les épaules, respire lentement."}]}]};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const params = new URLSearchParams(location.search);
+const CODE = (params.get('c') || location.hash.replace('#', '') || '').trim();
+const IS_DEMO = !API_URL || CODE === 'demo' || !CODE;
+const playSvg = s => `<svg width="${s}" height="${s}" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#1B1B1F"/></svg>`;
+const thumbImg = id => id ? `<img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">` : '';
+const store = { get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}} };
+const KEY = 'rr-prog-' + (CODE || 'demo');
+let P = null, saved = store.get(KEY) || {};
+
+async function load(){
+  try{
+    if (IS_DEMO) { P = DEMO; }
+    else {
+      const r = await fetch(API_URL + '?c=' + encodeURIComponent(CODE));
+      P = await r.json();
+    }
+    if (P.erreur) return showError(P.erreur);
+    render();
+  }catch(e){ showError("Impossible de charger le programme. Vérifie ta connexion et réessaie."); }
+}
+function showError(m){
+  $('state').innerHTML = `<h2>Oups</h2><p>${esc(m)}</p><p style="margin-top:10px">Contacte Rémy pour qu'il te renvoie ton lien.</p>`;
+}
+
+function render(){
+  const c = P.client, app = $('app');
+  const ids = []; P.blocs.forEach(b => b.items.forEach(it => it.video && !ids.includes(it.video) && ids.push(it.video)));
+  const nEx = P.blocs.reduce((a,b)=>a+b.items.length,0);
+  let h = `<header class="top"><img src="logo.png" alt="Rémy Reynaud – Coach & Éducateur fitness à domicile"></header>
+    <h1 class="hello">Bonjour ${esc(c.prenom)} 👋</h1>
+    <p class="sub"><b>${esc(c.programme)}</b></p>
+    ${c.message ? `<div class="note"><img src="icon-64.png" alt=""><div><b>Le mot de Rémy</b>${esc(c.message)}</div></div>` : ''}
+    <div class="meta">
+      ${c.duree ? `<span class="chip">⏱ ${esc(c.duree)}</span>` : ''}
+      <span class="chip">🧘 ${nEx} exercices</span>
+      ${c.materiel ? `<span class="chip">🎒 ${esc(c.materiel)}</span>` : ''}
+      ${c.frequence ? `<span class="chip">📅 ${esc(c.frequence)}</span>` : ''}
+    </div>
+    ${ids.length ? `<a class="btn playall" href="https://www.youtube.com/watch_videos?video_ids=${ids.slice(0,50).join(',')}" target="_blank" rel="noopener">▶ Regarder toute la séance en vidéo</a>` : ''}
+    <div class="progress"><span id="ptxt"></span><div class="bar"><i id="pbar"></i></div><button class="reset" id="reset">Recommencer</button></div>
+    <div id="list"></div>
+    <section class="feedback" id="fb">
+      <h2>Ton retour</h2>
+      <p class="s">Ça m'aide à adapter ta prochaine séance.</p>
+      <div class="flabel">Comment as-tu trouvé la séance ?</div>
+      <div class="scale" id="scale">
+        <button data-v="Facile"><b>😌</b>Facile</button><button data-v="OK"><b>🙂</b>OK</button>
+        <button data-v="Bien dur"><b>😤</b>Bien dur</button><button data-v="Très dur"><b>🥵</b>Très dur</button>
+        <button data-v="Trop dur"><b>😵</b>Trop</button>
+      </div>
+      <div class="flabel">As-tu ressenti une gêne ou une douleur ?</div>
+      <div class="yn" id="yn"><button data-v="Non">Non</button><button data-v="Oui">Oui</button></div>
+      <div class="flabel">Un commentaire pour Rémy ?</div>
+      <textarea id="comment" placeholder="Ex : le pont fessier tire un peu dans les ischios, le circuit était top…"></textarea>
+      <button class="send" id="send">Envoyer à Rémy</button>
+      <div class="msg" id="msg"></div>
+      <p class="rgpd">Tes réponses sont transmises uniquement à Rémy Reynaud pour adapter ton accompagnement. Elles sont conservées dans son espace privé et tu peux demander leur suppression à tout moment.</p>
+    </section>
+    <footer><img src="icon-192.png" alt=""><br>Rémy Reynaud · Coach & Éducateur fitness à domicile<br>Programme personnel, merci de ne pas le partager.</footer>`;
+  app.innerHTML = h;
+
+  const list = $('list'); let exN = 0, setIdx = 0;
+  P.blocs.forEach((b, bi) => {
+    const t = document.createElement('div'); t.className = 'block-title';
+    t.innerHTML = `<span class="bn">${bi+1}</span><h2>${esc(b.titre || (b.type==='simple' ? 'Exercices' : 'Circuit'))}</h2>${b.type!=='simple' ? '<span class="k">exercices enchaînés</span>' : ''}`;
+    list.appendChild(t);
+    if (b.type === 'simple') b.items.forEach(it => list.appendChild(simpleCard(it, ++exN)));
+    else { list.appendChild(circuitCard(b)); exN += b.items.length; }
+  });
+  // restaurer les cases cochées
+  document.querySelectorAll('#list .set').forEach((s,i) => { s.dataset.k = i; if (saved[i]) s.classList.add('on'); });
+  document.querySelectorAll('#list .ex, #list .circuit').forEach(refreshCard);
+  updateProgress();
+  $('reset').onclick = () => { saved = {}; store.set(KEY, saved); document.querySelectorAll('#list .set.on').forEach(s=>s.classList.remove('on')); document.querySelectorAll('#list .ex, #list .circuit').forEach(refreshCard); updateProgress(); };
+  bindFeedback();
+}
+
+function simpleCard(it, n){
+  const card = document.createElement('div'); card.className = 'ex';
+  card.innerHTML = `
+    <div class="thumb">${thumbImg(it.video)}<span class="tag">Exercice ${n}</span><div class="play">${playSvg(22)}</div></div>
+    <div class="exbody">
+      <h3>${esc(it.nom)}</h3><div class="target">${esc(it.zone)}${it.materiel && it.materiel!=='Poids du corps' ? ' · ' + esc(it.materiel) : ''}</div>
+      <div class="stats">
+        <div class="stat"><b>${it.series}</b><span>Séries</span></div>
+        <div class="stat"><b>${esc(it.reps || '—')}</b><span>${it.sec ? 'Durée' : 'Répét.'}</span></div>
+        <div class="stat"><b>${it.repos}s</b><span>Repos</span></div>
+      </div>
+      ${it.consigne ? `<p class="tip"><b>Consigne :</b> ${esc(it.consigne)}</p>` : ''}
+      <div class="sets"><div class="sets-label">Coche chaque série terminée</div>
+        ${Array.from({length: it.series}, (_, k) => `<button class="set">${k+1}</button>`).join('')}
+        ${it.repos ? `<button class="rest-btn">⏱ Repos ${it.repos}s</button>` : ''}
+      </div>
+    </div>`;
+  card.querySelectorAll('.set').forEach(btn => btn.onclick = () => {
+    toggleSet(btn);
+    const all = card.querySelectorAll('.set.on').length === it.series;
+    if (btn.classList.contains('on') && !all && it.repos) startTimer(it.repos);
+  });
+  const rb = card.querySelector('.rest-btn'); if (rb) rb.onclick = () => startTimer(it.repos);
+  card.querySelector('.thumb').onclick = () => openVideo(it);
+  return card;
+}
+
+function circuitCard(b){
+  const ch = b.type === 'chrono';
+  const card = document.createElement('div'); card.className = 'circuit' + (ch ? ' chrono' : '');
+  card.innerHTML = `
+    <span class="ctag">${ch ? '⏱ Circuit chrono · automatique' : '🔁 Circuit · ' + b.items.length + ' exercices'}</span>
+    <div class="cinfo">${ch
+      ? `<div class="stat"><b>${b.travail}s</b><span>Travail</span></div><div class="stat"><b>${b.repos}s</b><span>Repos</span></div><div class="stat"><b>${b.tours}</b><span>Tours</span></div>`
+      : `<div class="stat"><b>${b.tours}</b><span>Tours</span></div><div class="stat"><b>${b.repos}s</b><span>Transition</span></div><div class="stat"><b>${b.reposTour}s</b><span>Repos / tour</span></div>`}
+    </div>
+    <div>${b.items.map((it, i) => `
+      <div class="crow" data-i="${i}">
+        <div class="mini">${thumbImg(it.video)}<span class="o">${String.fromCharCode(65+i)}</span><div class="play">${playSvg(12)}</div></div>
+        <div class="ci"><b>${esc(it.nom)}</b><small>${esc(it.consigne || it.zone)}</small></div>
+        <div class="rp">${ch ? it.sec + ' s' : esc(it.reps)}</div>
+      </div>${i < b.items.length-1 ? `<div class="trans">↓ ${ch ? b.repos + ' s de repos' : b.repos + ' s pour te placer'}</div>` : ''}`).join('')}
+    </div>
+    <div class="trans">⟲ puis ${b.reposTour} s de repos et on recommence</div>
+    ${ch ? '<p class="trans">🔔 Bips sonores à 3-2-1 · pause possible à tout moment</p>' : ''}
+    <div class="sets" style="margin-top:12px"><div class="sets-label">Tours terminés</div>
+      ${Array.from({length: b.tours}, (_, k) => `<button class="set">Tour ${k+1}</button>`).join('')}
+    </div>
+    <button class="guided">▶ ${ch ? 'Lancer le chrono' : 'Lancer le circuit guidé'}</button>`;
+  card.querySelectorAll('.crow').forEach(r => r.onclick = () => openVideo(b.items[+r.dataset.i]));
+  card.querySelectorAll('.set').forEach(btn => btn.onclick = () => toggleSet(btn));
+  card.querySelector('.guided').onclick = () => startGuide(b, card);
+  return card;
+}
+
+function toggleSet(btn, force){
+  const on = force == null ? !btn.classList.contains('on') : force;
+  btn.classList.toggle('on', on);
+  saved[btn.dataset.k] = on || undefined; store.set(KEY, saved);
+  refreshCard(btn.closest('.ex, .circuit')); updateProgress();
+}
+function refreshCard(card){
+  const s = card.querySelectorAll('.set'), on = card.querySelectorAll('.set.on');
+  card.classList.toggle('done', s.length && s.length === on.length);
+}
+function updateProgress(){
+  const all = document.querySelectorAll('#list .set').length, on = document.querySelectorAll('#list .set.on').length;
+  $('ptxt').textContent = `${on} / ${all} séries & tours`;
+  $('pbar').style.width = (all ? on / all * 100 : 0) + '%';
+}
+
+/* ---------- Vidéo ---------- */
+function openVideo(it){
+  if (!it.video) return;
+  $('vtitle').textContent = it.nom;
+  $('vframe').innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${it.video}?autoplay=1&rel=0&playsinline=1&modestbranding=1&loop=1&playlist=${it.video}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+  $('vmodal').classList.add('on');
+}
+$('vclose').onclick = () => { $('vmodal').classList.remove('on'); $('vframe').innerHTML = ''; };
+
+/* ---------- Minuteur de repos ---------- */
+let tLeft = 0, tMax = 0, tInt = null; const C = 615.75;
+function startTimer(s){ clearInterval(tInt); tLeft = s; tMax = s; drawT(); $('timer').classList.add('on'); audio();
+  tInt = setInterval(() => { tLeft--; if (tLeft <= 3 && tLeft > 0) beep(880,.12); drawT(); if (tLeft <= 0) { beep(1320,.35); stopTimer(); } }, 1000); }
+function drawT(){ $('tnum').textContent = Math.max(tLeft,0); $('arc').style.strokeDashoffset = C * (1 - Math.max(tLeft,0) / tMax); }
+function stopTimer(){ clearInterval(tInt); $('timer').classList.remove('on'); }
+$('tstop').onclick = stopTimer;
+$('tplus').onclick = () => { tLeft += 15; tMax += 15; drawT(); };
+
+/* ---------- Son & écran allumé ---------- */
+let AC = null, wake = null;
+function audio(){ try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); AC.resume(); } catch(e) { AC = null; } }
+function beep(f, d){ try { if (!AC) return; const o = AC.createOscillator(), g = AC.createGain(); o.frequency.value = f; o.connect(g); g.connect(AC.destination);
+  g.gain.setValueAtTime(.3, AC.currentTime); g.gain.exponentialRampToValueAtTime(.001, AC.currentTime + d); o.start(); o.stop(AC.currentTime + d); } catch(e) {} }
+async function keepAwake(on){ try { if (on && 'wakeLock' in navigator) wake = await navigator.wakeLock.request('screen'); else if (!on && wake) { await wake.release(); wake = null; } } catch(e) {} }
+
+/* ---------- Mode guidé (circuit / chrono) ---------- */
+const G = { b:null, card:null, tour:0, idx:0, phase:'', left:0, max:0, int:null, next:null, paused:false };
+const GC = 2 * Math.PI * 82;
+const isCh = () => G.b.type === 'chrono';
+function startGuide(b, card){ audio(); keepAwake(true); Object.assign(G, { b, card, tour:0, idx:0, paused:false }); $('guide').classList.add('on');
+  if (isCh()) { G.phase = 'ready'; gCount(5, gWork); } else gWork(); }
+function gClose(){ clearInterval(G.int); keepAwake(false); $('guide').classList.remove('on'); }
+$('gx').onclick = gClose;
+function gCount(s, next){ clearInterval(G.int); G.left = s; G.max = s; G.next = next; G.paused = false; gRender();
+  G.int = setInterval(() => { if (G.paused) return; G.left--;
+    if (G.left <= 0) { clearInterval(G.int); beep(1320,.35); next(); } else { if (G.left <= 3) beep(880,.12); gRender(); } }, 1000); }
+function gWork(){ G.phase = 'work'; const it = G.b.items[G.idx];
+  if (isCh()) gCount(it.sec || G.b.travail, gAfter); else if (it.sec) gCount(it.sec, gAfter); else { clearInterval(G.int); gRender(); } }
+function gAfter(){
+  const n = G.b.items.length;
+  if (G.idx < n - 1) { G.idx++; G.phase = 'trans'; gCount(G.b.repos, gWork); return; }
+  const btn = G.card.querySelectorAll('.set')[G.tour]; if (btn) toggleSet(btn, true);
+  if (G.tour < G.b.tours - 1) { G.tour++; G.idx = 0; G.phase = 'rest'; gCount(G.b.reposTour, gWork); }
+  else { G.phase = 'end'; clearInterval(G.int); keepAwake(false); gRender(); }
+}
+function ring(){ return `<div class="gring"><svg width="190" height="190"><circle cx="95" cy="95" r="82" stroke="rgba(255,255,255,.15)" stroke-width="11" fill="none"/><circle cx="95" cy="95" r="82" stroke="#fff" stroke-width="11" fill="none" stroke-linecap="round" stroke-dasharray="${GC}" stroke-dashoffset="${GC * (1 - G.left / G.max)}" style="transition:stroke-dashoffset 1s linear"/></svg><div class="t">${G.left}</div></div>`; }
+function timedButtons(B){
+  B.innerHTML = `<button id="gp">${G.paused ? '▶ Reprendre' : '⏸ Pause'}</button><button id="g15">+15 s</button><button class="main" id="gs">Passer ›</button>`;
+  $('gp').onclick = () => { G.paused = !G.paused; gRender(); };
+  $('g15').onclick = () => { G.left += 15; G.max += 15; gRender(); };
+  $('gs').onclick = () => { clearInterval(G.int); G.next(); };
+}
+function gRender(){
+  const b = G.b, n = b.items.length, it = b.items[G.idx], ch = isCh();
+  $('guide').style.background = G.phase === 'work' && ch ? '#5f806d' : G.phase === 'ready' ? '#8f6b6b' : '#1B1B1F';
+  $('gpos').textContent = G.phase === 'end' ? 'Terminé' : `Tour ${G.tour+1}/${b.tours} · Exercice ${G.idx+1}/${n}`;
+  let dots = ''; for (let t = 0; t < b.tours; t++) for (let i = 0; i < n; i++) { const k = t*n+i, cur = G.tour*n+G.idx; dots += `<i class="${G.phase==='end' || k < cur ? 'd' : k === cur && G.phase === 'work' ? 'c' : ''}"></i>`; }
+  $('gdots').innerHTML = dots;
+  const M = $('gmain'), B = $('gbot');
+  const pz = G.paused ? '<div class="gphase" style="color:#F4E8E8">⏸ En pause</div>' : '';
+  if (G.phase === 'ready') {
+    M.innerHTML = `<div class="gphase">Prépare-toi</div>${ring()}<p class="gnext">On commence par</p><h2 class="gname" style="margin-top:6px">${esc(it.nom)}</h2>`;
+    timedButtons(B);
+  } else if (G.phase === 'work') {
+    M.innerHTML = `${pz}<div class="gphase">${ch ? '🔥 Travail' : 'À toi de jouer'}</div>
+      <div class="gvid">${thumbImg(it.video)}<div class="play">${playSvg(22)}</div></div>
+      <h2 class="gname">${esc(it.nom)}</h2>
+      ${ch || it.sec ? ring() : `<div class="greps">${esc(it.reps)}</div>`}
+      ${it.consigne ? `<p class="gtip">${esc(it.consigne)}</p>` : ''}`;
+    M.querySelector('.gvid').onclick = () => { G.paused = true; gRender(); openVideo(it); };
+    if (ch || it.sec) timedButtons(B);
+    else { B.innerHTML = `<button class="main" id="gb1">C'est fait ✓</button>`; $('gb1').onclick = () => { clearInterval(G.int); gAfter(); }; }
+  } else if (G.phase === 'trans' || G.phase === 'rest') {
+    const rest = G.phase === 'rest';
+    M.innerHTML = `${pz}<div class="gphase">${rest ? 'Repos entre les tours' : ch ? '😮‍💨 Repos' : 'Transition'}</div>${ring()}
+      <p class="gnext">${rest ? `Tour ${G.tour+1} : on repart sur` : 'Prochain exercice :'}</p>
+      <h2 class="gname" style="margin-top:6px">${esc(it.nom)}</h2><div class="gnext" style="margin-top:4px"><b>${ch ? (it.sec || b.travail) + ' s' : esc(it.reps)}</b></div>`;
+    timedButtons(B);
+  } else {
+    M.innerHTML = `<div style="font-size:64px">💪</div><h2 class="gname" style="margin:10px 0">Bravo, circuit terminé !</h2>
+      <p class="gtip">${b.tours} tours de ${n} exercices. Bois un peu d'eau avant la suite.</p>`;
+    B.innerHTML = `<button class="main" id="gb1">Revenir à la séance</button>`; $('gb1').onclick = gClose;
+  }
+}
+
+/* ---------- Retour ---------- */
+function bindFeedback(){
+  const fb = { ressenti:'', douleur:'' };
+  document.querySelectorAll('#scale button').forEach(b => b.onclick = () => { document.querySelectorAll('#scale button').forEach(x => x.classList.remove('on')); b.classList.add('on'); fb.ressenti = b.dataset.v; });
+  document.querySelectorAll('#yn button').forEach(b => b.onclick = () => { document.querySelectorAll('#yn button').forEach(x => x.classList.remove('on')); b.classList.add('on'); fb.douleur = b.dataset.v; });
+  $('send').onclick = async () => {
+    const msg = $('msg'), btn = $('send');
+    const all = document.querySelectorAll('#list .set').length, on = document.querySelectorAll('#list .set.on').length;
+    const data = { c: CODE, fait: `${on}/${all}`, ressenti: fb.ressenti, douleur: fb.douleur, commentaire: $('comment').value.trim() };
+    if (!data.ressenti && !data.douleur && !data.commentaire) { msg.className = 'msg err'; msg.textContent = 'Indique au moins ton ressenti ou un commentaire 🙂'; return; }
+    btn.disabled = true; btn.textContent = 'Envoi…';
+    try {
+      if (IS_DEMO) await new Promise(r => setTimeout(r, 600));
+      else {
+        const r = await fetch(API_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(data) });
+        const j = await r.json(); if (!j.ok) throw new Error(j.erreur || 'refus');
+      }
+      msg.className = 'msg ok'; msg.innerHTML = `✅ <b>Merci ${esc(P.client.prenom)} !</b> Ton retour est bien arrivé chez Rémy.` + (IS_DEMO ? ' <i>(démo : rien n\'a été envoyé)</i>' : '');
+      btn.textContent = 'Envoyé ✓';
+    } catch(e) {
+      msg.className = 'msg err'; msg.textContent = "L'envoi n'a pas marché. Vérifie ta connexion et réessaie.";
+      btn.disabled = false; btn.textContent = 'Envoyer à Rémy';
+    }
+  };
+}
+
+load();
+</script>
+</body>
+</html>
