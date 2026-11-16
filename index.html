@@ -195,6 +195,10 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxYOAfGya7d2upJ9I5XZ7sT
 const DEMO = {"client":{"prenom":"Marie","programme":"Dos & posture – Séance A","message":"On garde un rythme lent et contrôlé. Si une douleur apparaît, réduis l'amplitude et note-le en bas de page.","duree":"30 min","materiel":"Tapis + élastique","frequence":"3× / semaine"},"blocs":[{"titre":"Échauffement","type":"simple","tours":null,"reposTour":null,"items":[{"nom":"Le chat","zone":"Étirements & mobilité","materiel":"Poids du corps","video":"l4Ka63iomGY","series":2,"reps":"10","sec":null,"repos":30,"consigne":"Inspire en creusant, expire en arrondissant."}]},{"titre":"Circuit renfo","type":"circuit","tours":3,"reposTour":90,"items":[{"nom":"Fessiers extension de hanche","zone":"Fessiers & hanches","materiel":"Poids du corps","video":"MnMZ9Qy8bt8","series":null,"reps":"12","sec":null,"repos":15,"consigne":""},{"nom":"Rowing élastique","zone":"Haut du corps","materiel":"Élastique","video":"nG_01Alv3R0","series":null,"reps":"12","sec":null,"repos":15,"consigne":"Omoplates vers l'arrière et vers le bas."},{"nom":"Squat poids du corps","zone":"Jambes","materiel":"Poids du corps","video":"STFlWF1aetU","series":null,"reps":"10","sec":null,"repos":15,"consigne":""},{"nom":"Gainage","zone":"Gainage & abdos","materiel":"Poids du corps","video":"tO1iONbL5BY","series":null,"reps":"25 s","sec":25,"repos":15,"consigne":"Nombril rentré, respire normalement."}],"repos":15},{"titre":"Circuit chrono","type":"chrono","tours":2,"reposTour":60,"items":[{"nom":"Montée de genoux debout (élastique)","zone":"Jambes","materiel":"Élastique","video":"yju8vrzt8Fk","series":null,"reps":"30 s","sec":30,"repos":15,"consigne":""},{"nom":"Fentes dynamique vers l'arrière","zone":"Jambes","materiel":"Poids du corps","video":"i3foTdEqMd4","series":null,"reps":"30 s","sec":30,"repos":15,"consigne":""},{"nom":"Marche de l'ours","zone":"Gainage & abdos","materiel":"Poids du corps","video":"IDdgV29IzAE","series":null,"reps":"30 s","sec":30,"repos":15,"consigne":""}],"repos":15,"travail":30},{"titre":"Retour au calme","type":"simple","tours":null,"reposTour":null,"items":[{"nom":"Position de l'enfant","zone":"Étirements & mobilité","materiel":"Poids du corps","video":"IKjekwP-gxE","series":1,"reps":"40 s","sec":40,"repos":0,"consigne":"Relâche les épaules, respire lentement."}]}]};
 
 const $ = id => document.getElementById(id);
+// « 12 » → « 12 réps » ; les durées (30 s, 1 min) et les textes déjà précisés restent tels quels
+const reps = r => { const v = String(r == null ? '' : r).trim(); if (!v) return '—';
+  if (/\d\s*(s|sec|secondes?|min|minutes?|"|')\b|\d\s*(s|")$|r[ée]p/i.test(v)) return v;
+  return /^\d/.test(v) ? v.replace(/^(\d+(?:\s*[-àa]\s*\d+)?)/, '$1 réps') : v; };
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const params = new URLSearchParams(location.search);
 const CODE = (params.get('c') || location.hash.replace('#', '') || '').trim();
@@ -281,7 +285,7 @@ function simpleCard(it, n){
       <h3>${esc(it.nom)}</h3><div class="target">${esc(it.zone)}${it.materiel && it.materiel!=='Poids du corps' ? ' · ' + esc(it.materiel) : ''}</div>
       <div class="stats">
         <div class="stat"><b>${it.series}</b><span>Séries</span></div>
-        <div class="stat"><b>${esc(it.reps || '—')}</b><span>${it.sec ? 'Durée' : 'Répét.'}</span></div>
+        <div class="stat"><b>${esc(it.sec ? it.reps : reps(it.reps))}</b><span>${it.sec ? 'Durée' : 'Par série'}</span></div>
         <div class="stat"><b>${it.repos}s</b><span>Repos</span></div>
       </div>
       ${it.consigne ? `<p class="tip"><b>Consigne :</b> ${esc(it.consigne)}</p>` : ''}
@@ -313,7 +317,7 @@ function circuitCard(b){
       <div class="crow" data-i="${i}">
         <div class="mini">${thumbImg(it.video)}<span class="o">${String.fromCharCode(65+i)}</span><div class="play">${playSvg(12)}</div></div>
         <div class="ci"><b>${esc(it.nom)}</b><small>${esc(it.consigne || it.zone)}</small></div>
-        <div class="rp">${ch ? it.sec + ' s' : esc(it.reps)}</div>
+        <div class="rp">${ch ? it.sec + ' s' : esc(it.sec ? it.reps : reps(it.reps))}</div>
       </div>${i < b.items.length-1 ? `<div class="trans">↓ ${ch ? b.repos + ' s de repos' : b.repos + ' s pour te placer'}</div>` : ''}`).join('')}
     </div>
     <div class="trans">⟲ puis ${b.reposTour} s de repos et on recommence</div>
@@ -411,7 +415,7 @@ function gRender(){
     M.innerHTML = `${pz}<div class="gphase">${ch ? '🔥 Travail' : 'À toi de jouer'}</div>
       <div class="gvid">${thumbImg(it.video)}<div class="play">${playSvg(22)}</div></div>
       <h2 class="gname">${esc(it.nom)}</h2>
-      ${ch || it.sec ? ring() : `<div class="greps">${esc(it.reps)}</div>`}
+      ${ch || it.sec ? ring() : `<div class="greps">${esc(reps(it.reps))}</div>`}
       ${it.consigne ? `<p class="gtip">${esc(it.consigne)}</p>` : ''}`;
     M.querySelector('.gvid').onclick = () => { G.paused = true; gRender(); openVideo(it); };
     if (ch || it.sec) timedButtons(B);
@@ -420,7 +424,7 @@ function gRender(){
     const rest = G.phase === 'rest';
     M.innerHTML = `${pz}<div class="gphase">${rest ? 'Repos entre les tours' : ch ? '😮‍💨 Repos' : 'Transition'}</div>${ring()}
       <p class="gnext">${rest ? `Tour ${G.tour+1} : on repart sur` : 'Prochain exercice :'}</p>
-      <h2 class="gname" style="margin-top:6px">${esc(it.nom)}</h2><div class="gnext" style="margin-top:4px"><b>${ch ? (it.sec || b.travail) + ' s' : esc(it.reps)}</b></div>`;
+      <h2 class="gname" style="margin-top:6px">${esc(it.nom)}</h2><div class="gnext" style="margin-top:4px"><b>${ch ? (it.sec || b.travail) + ' s' : esc(it.sec ? it.reps : reps(it.reps))}</b></div>`;
     timedButtons(B);
   } else {
     M.innerHTML = `<div style="font-size:64px">💪</div><h2 class="gname" style="margin:10px 0">Bravo, circuit terminé !</h2>
